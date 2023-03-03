@@ -13,6 +13,10 @@ class CarService
         return $cars;
     }
 
+    public function getCarById ($id) {
+        //
+    }
+
     public function add ($request) {
         //
     }
