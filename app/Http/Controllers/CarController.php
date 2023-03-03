@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CarService;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
+    private $carService;
+
+    public function __construct() {
+        $this->carService = new CarService();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,17 +20,10 @@ class CarController extends Controller
      */
     public function index()
     {
-        //
-    }
+        // todo $result = $this->carService->getAllCars();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        // todo return $result;
+        return $this->carService->test();
     }
 
     /**
@@ -32,9 +32,20 @@ class CarController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    // todo для теста с помощью постман:
+    // todo в postman key - имя инпута, value - значение
+    // todo в коде $request->input( key_в_postman )
+
     public function store(Request $request)
     {
-        //
+        // todo validation
+        // todo $result = $this->carService->add($request)
+        // todo if ($result)
+        // todo return success
+        // todo else error
+
+        return $request->input('name');
     }
 
     /**
@@ -45,18 +56,10 @@ class CarController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        // todo validation
+        // todo $result = $this->carService->getCarById($id);
+        // todo return $result
+        return 'show';
     }
 
     /**
@@ -68,7 +71,13 @@ class CarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // todo validation
+        // todo $result = $thid->carService->edit( $request );
+        // todo if ($result)
+        // todo return success
+        // todo else error
+
+        return 'update';
     }
 
     /**
@@ -79,6 +88,11 @@ class CarController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // todo validation
+        // todo $result = $this->carService->delete($id);
+        // todo if ($result)
+        // todo return success
+        // todo else error
+        return 'destroy';
     }
 }
