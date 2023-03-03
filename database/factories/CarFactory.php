@@ -3,9 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class UserFactory extends Factory
+class CarFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,7 +14,9 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'number' => $this->faker->randomNumber(),
+            'color' => $this->faker->word(),
+            'vin' => $this->faker->randomNumber(),
         ];
     }
 }
