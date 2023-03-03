@@ -22,7 +22,7 @@ class CarController extends Controller
     {
         $result = $this->carService->getAllCars();
 
-        return $result;
+        return json_encode($result);
     }
 
     /**
@@ -55,7 +55,7 @@ class CarController extends Controller
         // todo validation
         $result = $this->carService->getCarById($id);
 
-        return $result;
+        return json_encode($result);
     }
 
     /**

@@ -4,17 +4,23 @@ namespace App\Services;
 
 
 use App\Models\Car;
+use Illuminate\Support\Facades\DB;
 
 class CarService
 {
     public function getAllCars () {
-        $cars = Car::all();
-        // todo sort, pagination
+        $cars = DB::table('cars')
+                  ->paginate(5);
+        // todo sort
         return $cars;
     }
 
     public function getCarById ($id) {
-        //
+        $car = DB::table('cars')
+                 ->where('id', $id)
+                 ->get();
+
+        return $car;
     }
 
     public function add ($request) {
@@ -26,6 +32,10 @@ class CarService
     }
 
     public function delete ($id) {
-        //
+        $result = DB::table('cars')
+                    ->where('id', $id)
+                                   ->delete();
+
+        return $result;
     }
 }
