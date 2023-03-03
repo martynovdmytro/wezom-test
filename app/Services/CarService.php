@@ -3,18 +3,25 @@
 namespace App\Services;
 
 
+use App\Models\Car;
+
 class CarService
 {
     public function getAllCars () {
-        // todo $cars = Car::all();
+        $cars = Car::all();
         // todo sort, pagination
-        // todo return $result;
+        return $cars;
     }
 
-    // todo public function add ($request)
+    public function add ($request) {
+        //
+    }
 
-    // todo public function edit ($request)
+    public function edit ($request) {
+        //
+    }
 
-    // todo public function delete ($id)
-
+    public function delete ($id) {
+        //
+    }
 }

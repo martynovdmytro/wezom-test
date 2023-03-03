@@ -20,10 +20,9 @@ class CarController extends Controller
      */
     public function index()
     {
-        // todo $result = $this->carService->getAllCars();
+        $result = $this->carService->getAllCars();
 
-        // todo return $result;
-        return $this->carService->test();
+        return $result;
     }
 
     /**
@@ -33,19 +32,16 @@ class CarController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    // todo для теста с помощью постман:
-    // todo в postman key - имя инпута, value - значение
-    // todo в коде $request->input( key_в_postman )
-
     public function store(Request $request)
     {
         // todo validation
-        // todo $result = $this->carService->add($request)
-        // todo if ($result)
-        // todo return success
-        // todo else error
+        $result = $this->carService->add($request);
 
-        return $request->input('name');
+        if (!$result) {
+            return 'error';
+        }
+
+        return $result;
     }
 
     /**
@@ -57,9 +53,9 @@ class CarController extends Controller
     public function show($id)
     {
         // todo validation
-        // todo $result = $this->carService->getCarById($id);
-        // todo return $result
-        return 'show';
+        $result = $this->carService->getCarById($id);
+
+        return $result;
     }
 
     /**
@@ -72,12 +68,13 @@ class CarController extends Controller
     public function update(Request $request, $id)
     {
         // todo validation
-        // todo $result = $thid->carService->edit( $request );
-        // todo if ($result)
-        // todo return success
-        // todo else error
+        $result = $this->carService->edit($request);
 
-        return 'update';
+        if (!$result) {
+            return 'error';
+        }
+
+        return $result;
     }
 
     /**
@@ -89,10 +86,12 @@ class CarController extends Controller
     public function destroy($id)
     {
         // todo validation
-        // todo $result = $this->carService->delete($id);
-        // todo if ($result)
-        // todo return success
-        // todo else error
-        return 'destroy';
+        $result = $this->carService->delete($id);
+
+        if (!$result) {
+            return 'error';
+        }
+
+        return $result;
     }
 }
