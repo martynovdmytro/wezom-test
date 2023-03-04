@@ -25,6 +25,7 @@ class CreateCarsTable extends Migration
             $table->string('vin')
                   ->unique()
                   ->index();
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }

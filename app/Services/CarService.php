@@ -31,6 +31,7 @@ class CarService
         $maker = null;
         $model = null;
         $year = null;
+        $timestamp = date('Y-m-d H:i:s');
 
         $decodedVinData = $this->vinDecoder($vin);
 
@@ -58,30 +59,24 @@ class CarService
         if (is_null($userId)) {
             $userId = DB::table('users')->insertGetId([
                 'name' => $name,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp
             ]);
         }
 
         if (!$this->issetNumber($number) && !$this->issetVin($vin)) {
-            $timestamp = date('Y-m-d H:i:s');
-            $carId = DB::table('cars')->insertGetId([
+            $success = DB::table('cars')->insert([
                 'number' => $number,
                 'color' => $color,
                 'maker' => $maker,
                 'model' => $model,
                 'year' => $year,
                 'vin' => $vin,
+                'user_id' => $userId,
                 'created_at' => $timestamp,
                 'updated_at' => $timestamp
 
             ]);
-        } else {
-            DB::rollBack();
-            return 'car number or vin code already exists';
-        }
-
-        if (isset($carId) && isset($userId)) {
-            $success = DB::insert('insert into car_user (car_id, user_id) values (?, ?)', [$carId, $userId]);
-
             if ($success) {
                 DB::commit();
                 return 'success';
@@ -89,6 +84,9 @@ class CarService
                 DB::rollBack();
                 return 'error';
             }
+        } else {
+            DB::rollBack();
+            return 'car number or vin code already exists';
         }
     }
 

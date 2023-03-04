@@ -15,8 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)
-            ->hasAttached(Car::factory())
-            ->create();
+        User::factory(10)->has(Car::factory(3))->create();
     }
 }
