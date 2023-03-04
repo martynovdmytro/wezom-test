@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCarRequest;
 use App\Services\CarService;
 use Illuminate\Http\Request;
 
@@ -32,15 +33,11 @@ class CarController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function store(Request $request)
+    public function store(StoreCarRequest $request)
     {
-        // todo form validation
-        $validated = $request->validate([
-            'name' => 'required|min:4|max:16',
-            'number' => 'required|min:8|max:8|alpha_num',
-            'color' => 'required|min:2',
-            'vin' => 'required'
-        ]);
+        $validated = $request->validated();
+
+        return $validated;
 
         $result = $this->carService->add($request);
 
@@ -59,7 +56,7 @@ class CarController extends Controller
      */
     public function show($id)
     {
-        // todo validation
+        // todo id int val must be checked
         $result = $this->carService->getCarById($id);
 
         return json_encode($result);
@@ -72,9 +69,11 @@ class CarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreCarRequest $request, $id)
     {
-        // todo validation
+        // todo id int val must be checked
+        $validated = $request->validated();
+
         $result = $this->carService->edit($request);
 
         if (!$result) {
@@ -92,7 +91,7 @@ class CarController extends Controller
      */
     public function destroy($id)
     {
-        // todo validation
+        // todo id int val must be checked
         $result = $this->carService->delete($id);
 
         if (!$result) {
