@@ -34,7 +34,14 @@ class CarController extends Controller
 
     public function store(Request $request)
     {
-        // todo validation
+        // todo form validation
+        $validated = $request->validate([
+            'name' => 'required|min:4|max:16',
+            'number' => 'required|min:8|max:8|alpha_num',
+            'color' => 'required|min:2',
+            'vin' => 'required'
+        ]);
+
         $result = $this->carService->add($request);
 
         if (!$result) {
