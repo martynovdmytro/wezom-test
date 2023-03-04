@@ -8,14 +8,26 @@ use Illuminate\Support\Facades\DB;
 class CarService
 {
     public function index($request) {
-        $searchData = $request->input('search');
-        if (isset($searchData)) {
-            $filterData = null;
-            // todo filter
-            return $filterData;
+        $response = null;
+        $search = $request->input('search');
+        $maker = $request->input('maker');
+        $model = $request->input('model');
+        $year = $request->input('year');
+        if (isset($search)) {
+            $searchData = 'searched data';
+            // todo filter maker
+            // todo filter model
+            // todo filter year
+            $response = $searchData;
+        } elseif (isset($maker) || isset($model) || isset($year)){
+            $filterData = 'filtered by option';
+
+            $response = $filterData;
         } else {
-            return json_encode($this->getAllCars());
+            $response = $this->getAllCars();
         }
+
+        return json_encode($response);
     }
 
     public function get ($id) {
