@@ -19,6 +19,9 @@ class CreateCarsTable extends Migration
                   ->unique()
                   ->index();
             $table->string('color');
+            $table->string('maker');
+            $table->string('model');
+            $table->integer('year');
             $table->string('vin')
                   ->unique()
                   ->index();

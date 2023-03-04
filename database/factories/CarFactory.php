@@ -16,6 +16,9 @@ class CarFactory extends Factory
         return [
             'number' => $this->faker->randomNumber(),
             'color' => $this->faker->word(),
+            'maker' => $this->faker->word(),
+            'model' => $this->faker->word(),
+            'year' => $this->faker->year(),
             'vin' => $this->faker->randomNumber(),
         ];
     }
