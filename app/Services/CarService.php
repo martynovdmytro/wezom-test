@@ -22,26 +22,10 @@ class CarService
 
     public function add ($request) {
         DB::beginTransaction();
-        $decodedVinData = $this->vinDecoder($request['vin']);
-
-        if ($decodedVinData !== 'error') {
-            foreach ($decodedVinData["Results"] as $result) {
-                if ($result["Variable"] === "Make") {
-                    $maker = $result["Value"];
-                }
-                if ($result["Variable"] === "Model") {
-                    $model = $result["Value"];
-                }
-                if ($result["Variable"] === "Model Year") {
-                    $year = $result["Value"];
-                }
-            }
-        }
-
         // логически одному юзеру может принадлежать несколько автомобилей
         // в идеале для привязки авто должен быть какой-то уникальный идентификатор, типа номера паспорта юзера
         // в задании этого не было, поэтому идентификация только по имени
-
+        $carData = $this->getCarData($request['vin']);
         $userId = $this->getUserId($request['name']);
         $timestamp = date('Y-m-d H:i:s');
 
@@ -57,9 +41,9 @@ class CarService
             $success = DB::table('cars')->insert([
                 'number' => $request['number'],
                 'color' => $request['color'],
-                'maker' => $maker,
-                'model' => $model,
-                'year' => $year,
+                'maker' => $carData['maker'],
+                'model' => $carData['model'],
+                'year' => $carData['year'],
                 'vin' => $request['vin'],
                 'user_id' => $userId,
                 'created_at' => $timestamp,
@@ -79,10 +63,21 @@ class CarService
         }
     }
 
-    public function edit ($request) {
-        $result = false;
+    public function edit ($request, $id) {
+        $carData = $this->getCarData($request['vin']);
+        $timestamp = date('Y-m-d H:i:s');
+        $success = DB::table('cars')->where('id', $id)
+                                    ->update([
+            'number' => $request['number'],
+            'color' => $request['color'],
+            'maker' => $carData['maker'],
+            'model' => $carData['model'],
+            'year' => $carData['year'],
+            'vin' => $request['vin'],
+            'updated_at' => $timestamp
+        ]);
 
-        if ($result) {
+        if ($success) {
             return 'success';
         } else {
             return 'error';
@@ -127,7 +122,7 @@ class CarService
                  ->exists();
     }
 
-    private function vinDecoder ($vin) {
+    private function getCarData($vin) {
         $query = http_build_query(array($vin));
         $opts = array('http' =>
                           array(
@@ -145,12 +140,29 @@ class CarService
         {
             return "error";
         }
-        $response = @stream_get_contents($fp);
-        if($response == false)
+        $vinData = @stream_get_contents($fp);
+        if($vinData == false)
         {
             return "error";
         }
-        return json_decode($response, true);
+
+        $decodedVinData = json_decode($vinData, true);
+
+        if ($decodedVinData !== 'error') {
+            foreach ($decodedVinData["Results"] as $result) {
+                if ($result["Variable"] === "Make") {
+                    $response['maker'] = $result["Value"];
+                }
+                if ($result["Variable"] === "Model") {
+                    $response['model'] = $result["Value"];
+                }
+                if ($result["Variable"] === "Model Year") {
+                    $response['year'] = $result["Value"];
+                }
+            }
+        }
+
+        return $response;
     }
 
     private function getAllCars () {

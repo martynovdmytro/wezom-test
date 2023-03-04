@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class StoreCarRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class StoreCarRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:2|max:16|alpha',
+            'name' => $this->method() == 'POST' ? 'required|min:2|max:16|alpha' : '',
             'number' => 'required|size:8|alpha_num',
             'color' => 'required|min:3|max:32|alpha',
             'vin' => 'required|size:17|alpha_num'

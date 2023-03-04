@@ -29,7 +29,7 @@ class CarController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
 
@@ -48,14 +48,11 @@ class CarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
-        if (is_int($id)) {
-            $result = $this->carService->get($id);
-            return json_encode($result);
-        } else {
-            return 'error';
-        }
+        $result = $this->carService->get($id);
+
+        return json_encode($result);
     }
 
     /**
@@ -65,14 +62,12 @@ class CarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreCarRequest $request, $id)
+    public function update(StoreCarRequest $request, int $id)
     {
         $validated = $request->validated();
-        if (is_int($id)) {
-            $result = $this->carService->edit($request);
-        } else {
-            return 'error';
-        }
+
+        $result = $this->carService->edit($validated, $id);
+
         return $result;
     }
 
@@ -82,9 +77,8 @@ class CarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        // todo id int val must be checked
         $result = $this->carService->delete($id);
 
         return $result;
