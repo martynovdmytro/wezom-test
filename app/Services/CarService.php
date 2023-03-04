@@ -3,37 +3,26 @@
 namespace App\Services;
 
 
-use App\Models\Car;
 use Illuminate\Support\Facades\DB;
 
 class CarService
 {
-    public function getAllCars () {
-        $cars = DB::table('cars')
-                  ->paginate(5);
-        // todo sort
-        return $cars;
+    public function index($request) {
+        $searchData = $request->input('search');
+        if (isset($searchData)) {
+            return 'success';
+        } else {
+            return json_encode($this->getAllCars());
+        }
     }
 
-    public function getCarById ($id) {
-        $car = DB::table('cars')
-                 ->where('id', $id)
-                 ->get();
-
-        return $car;
+    public function get ($id) {
+        return $this->getCarById($id);
     }
 
     public function add ($request) {
-        $name = $request->input('name');
-        $number = $request->input('number');
-        $color = $request->input('color');
-        $vin = $request->input('vin');
-        $maker = null;
-        $model = null;
-        $year = null;
-        $timestamp = date('Y-m-d H:i:s');
-
-        $decodedVinData = $this->vinDecoder($vin);
+        DB::beginTransaction();
+        $decodedVinData = $this->vinDecoder($request['vin']);
 
         if ($decodedVinData !== 'error') {
             foreach ($decodedVinData["Results"] as $result) {
@@ -49,29 +38,29 @@ class CarService
             }
         }
 
-        DB::beginTransaction();
         // логически одному юзеру может принадлежать несколько автомобилей
         // в идеале для привязки авто должен быть какой-то уникальный идентификатор, типа номера паспорта юзера
         // в задании этого не было, поэтому идентификация только по имени
 
-        $userId = $this->getUserId($name);
+        $userId = $this->getUserId($request['name']);
+        $timestamp = date('Y-m-d H:i:s');
 
         if (is_null($userId)) {
             $userId = DB::table('users')->insertGetId([
-                'name' => $name,
+                'name' => $request['name'],
                 'created_at' => $timestamp,
                 'updated_at' => $timestamp
             ]);
         }
 
-        if (!$this->issetNumber($number) && !$this->issetVin($vin)) {
+        if (!$this->issetNumber($request['number']) && !$this->issetVin($request['vin'])) {
             $success = DB::table('cars')->insert([
-                'number' => $number,
-                'color' => $color,
+                'number' => $request['number'],
+                'color' => $request['color'],
                 'maker' => $maker,
                 'model' => $model,
                 'year' => $year,
-                'vin' => $vin,
+                'vin' => $request['vin'],
                 'user_id' => $userId,
                 'created_at' => $timestamp,
                 'updated_at' => $timestamp
@@ -91,7 +80,13 @@ class CarService
     }
 
     public function edit ($request) {
-        //
+        $result = false;
+
+        if ($result) {
+            return 'success';
+        } else {
+            return 'error';
+        }
     }
 
     public function delete ($id) {
@@ -99,7 +94,11 @@ class CarService
                     ->where('id', $id)
                                    ->delete();
 
-        return $result;
+        if ($result) {
+            return 'success';
+        } else {
+            return 'error';
+        }
     }
 
     private function getUserId($name) {
@@ -152,5 +151,19 @@ class CarService
             return "error";
         }
         return json_decode($response, true);
+    }
+
+    private function getAllCars () {
+        $cars = DB::table('cars')
+                  ->paginate(5);
+        return $cars;
+    }
+
+    private function getCarById ($id) {
+        $car = DB::table('cars')
+                 ->where('id', $id)
+                 ->get();
+
+        return $car;
     }
 }

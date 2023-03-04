@@ -19,11 +19,11 @@ class CarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $result = $this->carService->getAllCars();
+        $result = $this->carService->index($request);
 
-        return json_encode($result);
+        return $result;
     }
 
     /**
@@ -37,11 +37,7 @@ class CarController extends Controller
     {
         $validated = $request->validated();
 
-        $result = $this->carService->add($request);
-
-        if (!$result) {
-            return 'error';
-        }
+        $result = $this->carService->add($validated);
 
         return $result;
     }
@@ -54,10 +50,12 @@ class CarController extends Controller
      */
     public function show($id)
     {
-        // todo id int val must be checked
-        $result = $this->carService->getCarById($id);
-
-        return json_encode($result);
+        if (is_int($id)) {
+            $result = $this->carService->get($id);
+            return json_encode($result);
+        } else {
+            return 'error';
+        }
     }
 
     /**
@@ -69,15 +67,12 @@ class CarController extends Controller
      */
     public function update(StoreCarRequest $request, $id)
     {
-        // todo id int val must be checked
         $validated = $request->validated();
-
-        $result = $this->carService->edit($request);
-
-        if (!$result) {
+        if (is_int($id)) {
+            $result = $this->carService->edit($request);
+        } else {
             return 'error';
         }
-
         return $result;
     }
 
@@ -91,10 +86,6 @@ class CarController extends Controller
     {
         // todo id int val must be checked
         $result = $this->carService->delete($id);
-
-        if (!$result) {
-            return 'error';
-        }
 
         return $result;
     }
