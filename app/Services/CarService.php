@@ -10,7 +10,9 @@ class CarService
     public function index($request) {
         $searchData = $request->input('search');
         if (isset($searchData)) {
-            return 'success';
+            $filterData = null;
+            // todo filter
+            return $filterData;
         } else {
             return json_encode($this->getAllCars());
         }
