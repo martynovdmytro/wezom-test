@@ -37,8 +37,6 @@ class CarController extends Controller
     {
         $validated = $request->validated();
 
-        return $validated;
-
         $result = $this->carService->add($request);
 
         if (!$result) {
