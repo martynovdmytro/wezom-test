@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Models\Car;
 use Illuminate\Support\Facades\DB;
 
 class CarService
@@ -14,13 +15,19 @@ class CarService
         $model = $request->input('model');
         $year = $request->input('year');
         if (isset($search)) {
-            $searchData = 'searched data';
-            // todo filter maker
-            // todo filter model
-            // todo filter year
+            $searchData = DB::table('users')
+                            ->join('cars', 'users.id', '=', 'cars.user_id')
+                            ->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('number', 'LIKE', "%{$search}%")
+                            ->orWhere('vin', 'LIKE', "%{$search}%")
+                            ->get();
             $response = $searchData;
         } elseif (isset($maker) || isset($model) || isset($year)){
             $filterData = 'filtered by option';
+
+            // todo filter maker
+            // todo filter model
+            // todo filter year
 
             $response = $filterData;
         } else {

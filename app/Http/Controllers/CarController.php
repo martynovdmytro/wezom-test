@@ -21,6 +21,8 @@ class CarController extends Controller
      */
     public function index(Request $request)
     {
+        // todo тут должна быть валидация реквеста
+
         $result = $this->carService->index($request);
 
         return $result;
