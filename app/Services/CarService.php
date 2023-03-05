@@ -227,6 +227,7 @@ class CarService
 
     private function saveToXLS($data, $path) {
         $filePath = $path;
+        file_put_contents($path, '');
         $writer = WriterEntityFactory::createXLSXWriter();
 
         $writer->openToFile($filePath);
