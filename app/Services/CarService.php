@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\DB;
 class CarService
 {
     public function index($request) {
-        $response = null;
-        $search = $request->input('search');
-        if (isset($search)) {
+        if ($request->has('search')) {
+            $search = $request->input('search');
             $searchData = DB::table('users')
                             ->join('cars', 'users.id', '=', 'cars.user_id')
                             ->where('name', 'LIKE', "%{$search}%")
@@ -20,10 +19,23 @@ class CarService
                             ->get();
             $response = $searchData;
         } else {
-            $response = $this->getAllCars();
+            $response = Car::all();
         }
 
-        // todo filters
+        if ($request->has('maker')) {
+            $response = $response
+                ->where('maker', $request->input('maker'));
+        }
+
+        if ($request->has('model')) {
+            $response = $response
+                ->where('model', $request->input('model'));
+        }
+
+        if ($request->has('year')) {
+            $response = $response
+                ->where('year', $request->input('year'));
+        }
 
         return json_encode($response);
     }
