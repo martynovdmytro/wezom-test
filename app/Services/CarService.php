@@ -11,9 +11,6 @@ class CarService
     public function index($request) {
         $response = null;
         $search = $request->input('search');
-        $maker = $request->input('maker');
-        $model = $request->input('model');
-        $year = $request->input('year');
         if (isset($search)) {
             $searchData = DB::table('users')
                             ->join('cars', 'users.id', '=', 'cars.user_id')
