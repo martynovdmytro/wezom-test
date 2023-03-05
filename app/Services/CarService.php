@@ -22,17 +22,11 @@ class CarService
                             ->orWhere('vin', 'LIKE', "%{$search}%")
                             ->get();
             $response = $searchData;
-        } elseif (isset($maker) || isset($model) || isset($year)){
-            $filterData = 'filtered by option';
-
-            // todo filter maker
-            // todo filter model
-            // todo filter year
-
-            $response = $filterData;
         } else {
             $response = $this->getAllCars();
         }
+
+        // todo filters
 
         return json_encode($response);
     }
