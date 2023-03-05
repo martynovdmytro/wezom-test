@@ -43,7 +43,7 @@ class CarService
         }
 
         if ($request->has('save')) {
-            $filePath = '/Users/froze/dev/wezom-test.local/doc/data.xls';
+            $filePath = $request->input('path');
             $writer = WriterEntityFactory::createXLSXWriter();
 
             $writer->openToFile($filePath);
