@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Nette\Utils\Paginator;
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Box\Spout\Common\Entity\Row;
 
 class CarService
 {
@@ -41,7 +43,17 @@ class CarService
         }
 
         if ($request->has('save')) {
-            $this->saveToXLS($response);
+            $filePath = '/Users/froze/dev/wezom-test.local/doc/data.xls';
+            $writer = WriterEntityFactory::createXLSXWriter();
+
+            $writer->openToFile($filePath);
+            foreach ($response as $item) {
+                if ($item !== null) {
+                    $rowFromValues = WriterEntityFactory::createRowFromArray((array)$item);
+                    $writer->addRow($rowFromValues);
+                }
+            }
+            $writer->close();
         }
 
         $response = $this->paginate($response, 10);
@@ -221,6 +233,6 @@ class CarService
     }
 
     private function saveToXLS($data) {
-        // todo save to XLS
+
     }
 }
