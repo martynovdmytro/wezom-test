@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Jobs\ExportDataToXLS;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 
 class CarService
 {
@@ -39,7 +39,7 @@ class CarService
         }
 
         if ($request->has('save')) {
-            $this->saveToXLS(
+            ExportDataToXLS::dispatch(
                 $response,
                 $request->input('path')
             );
@@ -219,21 +219,5 @@ class CarService
             $perPage,
             $page,
             $options);
-    }
-
-    private function saveToXLS($data, $path) {
-        $filePath = $path;
-        file_put_contents($path, '');
-        $writer = WriterEntityFactory::createXLSXWriter();
-
-        $writer->openToFile($filePath);
-        foreach ($data as $items) {
-            foreach ($items as $item) {
-                $values[] = (string)$item;
-            }
-        }
-        $rowFromValues = WriterEntityFactory::createRowFromArray($values);
-        $writer->addRow($rowFromValues);
-        $writer->close();
     }
 }
