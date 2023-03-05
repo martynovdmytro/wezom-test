@@ -40,6 +40,10 @@ class CarService
                 ->where('year', $request->input('year'));
         }
 
+        if ($request->has('save')) {
+            $this->saveToXLS($response);
+        }
+
         $response = $this->paginate($response, 10);
 
         return json_encode($response);
@@ -214,5 +218,9 @@ class CarService
             $perPage,
             $page,
             $options);
+    }
+
+    private function saveToXLS($data) {
+        // todo save to XLS
     }
 }
