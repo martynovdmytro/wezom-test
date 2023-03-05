@@ -14,13 +14,19 @@ class CarService
             $search = $request->input('search');
             $searchData = DB::table('users')
                             ->join('cars', 'users.id', '=', 'cars.user_id')
+                            ->orderBy('cars.number', 'desc')
+                            ->orderBy('cars.vin', 'desc')
                             ->where('name', 'LIKE', "%{$search}%")
                             ->orWhere('number', 'LIKE', "%{$search}%")
                             ->orWhere('vin', 'LIKE', "%{$search}%")
                             ->get();
             $response = $searchData;
         } else {
-            $response = DB::table('cars')->get();
+            $response = DB::table('users')
+                          ->join('cars', 'users.id', '=', 'cars.user_id')
+                          ->orderBy('cars.number', 'desc')
+                          ->orderBy('cars.vin', 'desc')
+                          ->get();
         }
 
         if ($request->has('maker')) {
