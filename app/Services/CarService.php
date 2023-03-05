@@ -24,7 +24,7 @@ class CarService
                             ->get();
             $response = $searchData;
         } else {
-            $response = Car::all();
+            $response = DB::table('cars')->get();
         }
 
         if ($request->has('maker')) {
@@ -43,17 +43,10 @@ class CarService
         }
 
         if ($request->has('save')) {
-            $filePath = $request->input('path');
-            $writer = WriterEntityFactory::createXLSXWriter();
-
-            $writer->openToFile($filePath);
-            foreach ($response as $item) {
-                if ($item !== null) {
-                    $rowFromValues = WriterEntityFactory::createRowFromArray((array)$item);
-                    $writer->addRow($rowFromValues);
-                }
-            }
-            $writer->close();
+            $this->saveToXLS(
+                $response,
+                $request->input('path')
+            );
         }
 
         $response = $this->paginate($response, 10);
@@ -232,7 +225,18 @@ class CarService
             $options);
     }
 
-    private function saveToXLS($data) {
+    private function saveToXLS($data, $path) {
+        $filePath = $path;
+        $writer = WriterEntityFactory::createXLSXWriter();
 
+        $writer->openToFile($filePath);
+        foreach ($data as $items) {
+            foreach ($items as $item) {
+                $values[] = (string)$item;
+            }
+        }
+        $rowFromValues = WriterEntityFactory::createRowFromArray($values);
+        $writer->addRow($rowFromValues);
+        $writer->close();
     }
 }
