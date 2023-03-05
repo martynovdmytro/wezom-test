@@ -2,14 +2,10 @@
 
 namespace App\Services;
 
-
-use App\Models\Car;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Nette\Utils\Paginator;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
-use Box\Spout\Common\Entity\Row;
 
 class CarService
 {
