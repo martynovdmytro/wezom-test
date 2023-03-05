@@ -4,7 +4,10 @@ namespace App\Services;
 
 
 use App\Models\Car;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\Paginator;
 
 class CarService
 {
@@ -36,6 +39,8 @@ class CarService
             $response = $response
                 ->where('year', $request->input('year'));
         }
+
+        $response = $this->paginate($response, 10);
 
         return json_encode($response);
     }
@@ -201,5 +206,14 @@ class CarService
                  ->get();
 
         return $car;
+    }
+
+    private function paginate($items, $perPage = 15, $page = null, $options = [])
+    {
+        $page = $page ?: (\Illuminate\Pagination\Paginator::resolveCurrentPage() ?: 1);
+
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 }
