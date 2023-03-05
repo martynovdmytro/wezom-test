@@ -194,12 +194,6 @@ class CarService
         return $response;
     }
 
-    private function getAllCars () {
-        $cars = DB::table('cars')
-                  ->paginate(5);
-        return $cars;
-    }
-
     private function getCarById ($id) {
         $car = DB::table('cars')
                  ->where('id', $id)
