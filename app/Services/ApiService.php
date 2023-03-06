@@ -5,16 +5,9 @@ namespace App\Services;
 
 class ApiService
 {
-    private $url;
-
-    public function __construct($url)
+    public function getApiData($url)
     {
-        $this->url = $url;
-    }
-
-    public function getApiData()
-    {
-        $query = http_build_query(array($this->url));
+        $query = http_build_query(array($url));
         $opts = array('http' =>
                           array(
                               'header' =>
@@ -25,7 +18,7 @@ class ApiService
                               'content' => $query
                           )
         );
-        $apiURL = $this->url;
+        $apiURL = $url;
         $context = stream_context_create($opts);
         $fp = fopen($apiURL, 'rb', false, $context);
         if(!$fp)

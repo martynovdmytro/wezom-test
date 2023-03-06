@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCarRequest;
+use App\Services\ApiService;
 use App\Services\CarService;
 use Illuminate\Http\Request;
 
@@ -39,7 +40,7 @@ class CarController extends Controller
     {
         $validated = $request->validated();
 
-        $result = $this->carService->add($validated);
+        $result = $this->carService->add($validated, new ApiService());
 
         return $result;
     }

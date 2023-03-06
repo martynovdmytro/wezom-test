@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Maker extends Model
+class Brand extends Model
 {
     use HasFactory;
 
-    public function brands() {
+    public function maker() {
 
-        return $this->hasMany(Brand::class);
+        return $this->belongsTo(Maker::class);
 
     }
 }

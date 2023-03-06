@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ApiService;
 use App\Services\MakerService;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,7 @@ class MakerController extends Controller
     public function store(Request $request)
     {
         // todo запись makers в базу
-        $response = $this->makerService->store();
+        $response = $this->makerService->store(new ApiService());
 
         return $response;
     }

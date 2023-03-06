@@ -4,28 +4,24 @@ namespace App\Services;
 
 
 use App\Jobs\RefreshMaker;
+use App\Models\Brand;
 use App\Models\Maker;
 use Illuminate\Support\Facades\DB;
 
 class MakerService
 {
     public function index($request) {
-        $input = $request->input('enter');
-        $data = null;
+        $input = $request->input('autocomplete');
+        $maker = null;
 
         if (!empty($input)) {
-            $data = Maker::select("name")
-                         ->where('name', 'LIKE', '%'. $input. '%')
-                         ->get();
-
+            $maker = DB::select(
+                "select makers.name AS maker_name, brands.name AS brand_name from `makers` 
+                        left join `brands` on makers.id=brands.maker_id
+                        where makers.name LIKE '%$input%'"
+            );
         }
 
-        return $data;
-    }
-
-    public function store() {
-        RefreshMaker::dispatch();
-
-        return 'ok';
+        return $maker;
     }
 }

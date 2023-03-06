@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Brand;
 use App\Models\Maker;
 use App\Services\ApiService;
 use Illuminate\Bus\Queueable;
@@ -31,12 +32,12 @@ class RefreshMaker implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(ApiService $apiService)
     {
         Maker::truncate();
-        $url = "https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json";
-        $apiService = new ApiService($url);
-        $response = $apiService->getApiData();
+        Brand::truncate();
+        $getAllMakersUrl = "https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json";
+        $response = $apiService->getApiData($getAllMakersUrl);
         $timestamp = date('Y-m-d H:i:s');
 
         foreach ($response["Results"] as $result) {
@@ -46,6 +47,14 @@ class RefreshMaker implements ShouldQueue
                 'created_at' => $timestamp,
                 'updated_at' => $timestamp
             ]);
+            $getBrandsUrl = "https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformakeid/".$result["Make_ID"]."?format=json";
+            $brands = $apiService->getApiData($getBrandsUrl);
+            foreach ($brands["Results"] as $brand) {
+                DB::table('brands')->insert([
+                    'name' => $brand["Model_Name"],
+                    'maker_id' => $result["Make_ID"]
+                ]);
+            }
         }
     }
 }

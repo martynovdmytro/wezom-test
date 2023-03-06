@@ -60,11 +60,10 @@ class CarService
         return $this->getCarById($id);
     }
 
-    public function add ($request) {
+    public function add ($request, $apiService) {
         DB::beginTransaction();
         $url = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/" . $request['vin'] . "?format=json";
-        $apiService = new ApiService($url);
-        $carData = $apiService->getApiData();
+        $carData = $apiService->getApiData($url);
         $userId = $this->getUserId($request['name']);
         $timestamp = date('Y-m-d H:i:s');
 
