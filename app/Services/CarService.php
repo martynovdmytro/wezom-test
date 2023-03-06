@@ -47,24 +47,9 @@ class CarService
         }
 
         if ($request->has('save')) {
-            $file = 'data.xls';
-            file_put_contents($file, '');
-            $writer = WriterEntityFactory::createXLSXWriter();
-            $writer->openToFile($file);
-            foreach ($response as $items) {
-                foreach ($items as $item) {
-                    $cells[] =
-                        [WriterEntityFactory::createCell($item)]
-                    ;
-                }
-            }
-            foreach ($cells as $cell) {
-                $singleRow = WriterEntityFactory::createRow($cell);
-                $writer->addRow($singleRow);
-            }
-            $writer->close();
+            $this->createXLS($response, 'data.xls');
 
-            return Excel::download(new CarsExport($response), $file);
+            return Excel::download(new CarsExport($response), 'data.xls');
         }
 
         $response = $this->paginate($response, 10);
@@ -212,5 +197,24 @@ class CarService
             $perPage,
             $page,
             $options);
+    }
+
+    private function createXLS ($data, $fileName)
+    {
+        file_put_contents($fileName, '');
+        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer->openToFile($fileName);
+        foreach ($data as $items) {
+            foreach ($items as $item) {
+                $cells[] =
+                    [WriterEntityFactory::createCell($item)]
+                ;
+            }
+        }
+        foreach ($cells as $cell) {
+            $singleRow = WriterEntityFactory::createRow($cell);
+            $writer->addRow($singleRow);
+        }
+        $writer->close();
     }
 }
