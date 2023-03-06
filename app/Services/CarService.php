@@ -77,7 +77,10 @@ class CarService
             ]);
         }
 
-        if (!$this->issetNumber($request['number']) && !$this->issetVin($request['vin'])) {
+        if (!$this->issetNumber($request['number']) &&
+            !$this->issetVin($request['vin']) &&
+            $carData !== 'error')
+        {
             $success = DB::table('cars')->insert([
                 'number' => $request['number'],
                 'color' => $request['color'],
@@ -99,7 +102,7 @@ class CarService
             }
         } else {
             DB::rollBack();
-            return 'car number or vin code already exists';
+            return 'error';
         }
     }
 
@@ -188,17 +191,15 @@ class CarService
 
         $decodedVinData = json_decode($vinData, true);
 
-        if ($decodedVinData !== 'error') {
-            foreach ($decodedVinData["Results"] as $result) {
-                if ($result["Variable"] === "Make") {
-                    $response['maker'] = $result["Value"];
-                }
-                if ($result["Variable"] === "Model") {
-                    $response['model'] = $result["Value"];
-                }
-                if ($result["Variable"] === "Model Year") {
-                    $response['year'] = $result["Value"];
-                }
+        foreach ($decodedVinData["Results"] as $result) {
+            if ($result["Variable"] === "Make") {
+                $response['maker'] = $result["Value"];
+            }
+            if ($result["Variable"] === "Model") {
+                $response['model'] = $result["Value"];
+            }
+            if ($result["Variable"] === "Model Year") {
+                $response['year'] = $result["Value"];
             }
         }
 
