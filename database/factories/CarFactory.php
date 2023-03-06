@@ -14,12 +14,12 @@ class CarFactory extends Factory
     public function definition()
     {
         return [
-            'number' => $this->faker->randomNumber(),
+            'number' => $this->faker->unique()->randomNumber(),
             'color' => $this->faker->word(),
             'maker' => $this->faker->word(),
             'model' => $this->faker->word(),
             'year' => $this->faker->year(),
-            'vin' => $this->faker->randomNumber(),
+            'vin' => $this->faker->unique()->randomNumber(),
         ];
     }
 }

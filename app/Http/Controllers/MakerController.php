@@ -22,8 +22,9 @@ class MakerController extends Controller
     public function index()
     {
         // todo вывод всех записей из таблицы makers и привязанных к ним models
+        $response = $this->makerService->index();
 
-        return $this->makerService->index();
+        return $response;
     }
 
     /**
@@ -35,6 +36,8 @@ class MakerController extends Controller
     public function store(Request $request)
     {
         // todo запись makers в базу
-        return $this->makerService->store();
+        $response = $this->makerService->store();
+
+        return $response;
     }
 }
