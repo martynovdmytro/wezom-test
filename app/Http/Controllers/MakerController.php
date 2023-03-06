@@ -2,10 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MakerService;
 use Illuminate\Http\Request;
 
 class MakerController extends Controller
 {
+
+    private $makerService;
+
+    public function __construct()
+    {
+        $this->makerService = new MakerService();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class MakerController extends Controller
     {
         // todo вывод всех записей из таблицы makers и привязанных к ним models
 
-        return 'index makers';
+        return $this->makerService->index();
     }
 
     /**
@@ -27,6 +35,6 @@ class MakerController extends Controller
     public function store(Request $request)
     {
         // todo запись makers в базу
-        return 'store makers';
+        return $this->makerService->store();
     }
 }
