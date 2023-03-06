@@ -65,7 +65,8 @@ class CarService
         // логически одному юзеру может принадлежать несколько автомобилей
         // в идеале для привязки авто должен быть какой-то уникальный идентификатор, типа номера паспорта юзера
         // в задании этого не было, поэтому идентификация только по имени
-        $carData = $this->getCarData($request['vin']);
+        $url = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/" . $request['vin'] . "?format=json";
+        $carData = $this->getCarData($url);
         $userId = $this->getUserId($request['name']);
         $timestamp = date('Y-m-d H:i:s');
 
@@ -81,18 +82,31 @@ class CarService
             !$this->issetVin($request['vin']) &&
             $carData !== 'error')
         {
+            foreach ($carData["Results"] as $result) {
+                if ($result["Variable"] === "Make") {
+                    $car['maker'] = $result["Value"];
+                }
+                if ($result["Variable"] === "Model") {
+                    $car['model'] = $result["Value"];
+                }
+                if ($result["Variable"] === "Model Year") {
+                    $car['year'] = $result["Value"];
+                }
+            }
+
             $success = DB::table('cars')->insert([
                 'number' => $request['number'],
                 'color' => $request['color'],
-                'maker' => $carData['maker'],
-                'model' => $carData['model'],
-                'year' => $carData['year'],
+                'maker' => $car['maker'],
+                'model' => $car['model'],
+                'year' => $car['year'],
                 'vin' => $request['vin'],
                 'user_id' => $userId,
                 'created_at' => $timestamp,
                 'updated_at' => $timestamp
 
             ]);
+
             if ($success) {
                 DB::commit();
                 return 'success';
@@ -102,7 +116,7 @@ class CarService
             }
         } else {
             DB::rollBack();
-            return 'error';
+            return 'Error.';
         }
     }
 
@@ -165,8 +179,8 @@ class CarService
                  ->exists();
     }
 
-    private function getCarData($vin) {
-        $query = http_build_query(array($vin));
+    private function getCarData($url) {
+        $query = http_build_query(array($url));
         $opts = array('http' =>
                           array(
                               'header' => "Content-Type: application/x-www-form-urlencoded\r\n".
@@ -176,7 +190,7 @@ class CarService
                               'content' => $query
                           )
         );
-        $apiURL = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/" . $vin . "?format=json";
+        $apiURL = $url;
         $context = stream_context_create($opts);
         $fp = fopen($apiURL, 'rb', false, $context);
         if(!$fp)
@@ -191,19 +205,7 @@ class CarService
 
         $decodedVinData = json_decode($vinData, true);
 
-        foreach ($decodedVinData["Results"] as $result) {
-            if ($result["Variable"] === "Make") {
-                $response['maker'] = $result["Value"];
-            }
-            if ($result["Variable"] === "Model") {
-                $response['model'] = $result["Value"];
-            }
-            if ($result["Variable"] === "Model Year") {
-                $response['year'] = $result["Value"];
-            }
-        }
-
-        return $response;
+        return $decodedVinData;
     }
 
     private function getCarById ($id) {
