@@ -62,9 +62,6 @@ class CarService
 
     public function add ($request) {
         DB::beginTransaction();
-        // логически одному юзеру может принадлежать несколько автомобилей
-        // в идеале для привязки авто должен быть какой-то уникальный идентификатор, типа номера паспорта юзера
-        // в задании этого не было, поэтому идентификация только по имени
         $url = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/" . $request['vin'] . "?format=json";
         $carData = $this->getApiData($url);
         $userId = $this->getUserId($request['name']);
