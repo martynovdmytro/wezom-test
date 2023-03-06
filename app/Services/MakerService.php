@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class MakerService
 {
     public function index($request) {
-        $input = $request->input('input');
+        $input = $request->input('enter');
         $data = null;
 
         if (!empty($input)) {
