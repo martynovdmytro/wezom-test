@@ -16,21 +16,19 @@ class CarController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all, searched or/and filtered data from cars table.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        // todo тут должна быть валидация реквеста
+        $response = $this->carService->index($request);
 
-        $result = $this->carService->index($request);
-
-        return $result;
+        return $response;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new data to cars table from the form.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -40,26 +38,26 @@ class CarController extends Controller
     {
         $validated = $request->validated();
 
-        $result = $this->carService->add($validated, new ApiService());
+        $response = $this->carService->add($validated, new ApiService());
 
-        return $result;
+        return $response;
     }
 
     /**
-     * Display the specified resource.
+     * Return data from cars table by entered id.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(int $id)
     {
-        $result = $this->carService->get($id);
+        $response = $this->carService->get($id);
 
-        return json_encode($result);
+        return $response;
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified data in cars table.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -69,21 +67,21 @@ class CarController extends Controller
     {
         $validated = $request->validated();
 
-        $result = $this->carService->edit($validated, $id);
+        $response = $this->carService->edit($validated, $id);
 
-        return $result;
+        return $response;
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified data from cars table.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
     {
-        $result = $this->carService->delete($id);
+        $response = $this->carService->delete($id);
 
-        return $result;
+        return $response;
     }
 }

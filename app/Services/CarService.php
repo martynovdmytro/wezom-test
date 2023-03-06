@@ -57,7 +57,7 @@ class CarService
     }
 
     public function get ($id) {
-        return $this->getCarById($id);
+        return json_encode($this->getCarById($id));
     }
 
     public function add ($request, $apiService) {

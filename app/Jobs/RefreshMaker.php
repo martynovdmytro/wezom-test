@@ -18,17 +18,7 @@ class RefreshMaker implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Execute the job.
+     * Provides refreshing of maker and brand tables data according to the schedule in Kernel.php.
      *
      * @return void
      */

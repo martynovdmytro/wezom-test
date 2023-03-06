@@ -16,30 +16,15 @@ class MakerController extends Controller
         $this->makerService = new MakerService();
     }
     /**
-     * Display a listing of the resource.
+     * Display maker and related brands depends on data entered to autocomplete input.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        // todo вывод всех записей из таблицы makers и привязанных к ним models
-
         $response = $this->makerService->index($request);
 
         return $response;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        // todo запись makers в базу
-        $response = $this->makerService->store(new ApiService());
-
-        return $response;
-    }
 }
