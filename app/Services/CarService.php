@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Exports\CarsExport;
 use App\Jobs\ExportDataToXLS;
+use App\Models\Car;
 use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -35,33 +37,34 @@ class CarService
             $response = $response
                 ->where('maker', $request->input('maker'));
         }
-
         if ($request->has('model')) {
             $response = $response
                 ->where('model', $request->input('model'));
         }
-
         if ($request->has('year')) {
             $response = $response
                 ->where('year', $request->input('year'));
         }
 
         if ($request->has('save')) {
-            $file = 'data.xlsx';
+            $file = 'data.xls';
             file_put_contents($file, '');
             $writer = WriterEntityFactory::createXLSXWriter();
-            $values = array();
             $writer->openToFile($file);
             foreach ($response as $items) {
                 foreach ($items as $item) {
-                    $values[] = $item;
+                    $cells[] =
+                        [WriterEntityFactory::createCell($item)]
+                    ;
                 }
             }
-            $rowFromValues = WriterEntityFactory::createRowFromArray($values);
-            $writer->addRow($rowFromValues);
+            foreach ($cells as $cell) {
+                $singleRow = WriterEntityFactory::createRow($cell);
+                $writer->addRow($singleRow);
+            }
             $writer->close();
 
-            return Excel::download($request->input('path'), $file);
+            return Excel::download(new CarsExport($response), $file);
         }
 
         $response = $this->paginate($response, 10);
