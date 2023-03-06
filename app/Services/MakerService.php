@@ -2,10 +2,6 @@
 
 namespace App\Services;
 
-
-use App\Jobs\RefreshMaker;
-use App\Models\Brand;
-use App\Models\Maker;
 use Illuminate\Support\Facades\DB;
 
 class MakerService
