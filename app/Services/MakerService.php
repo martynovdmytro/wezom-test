@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Models\Maker;
 use Illuminate\Support\Facades\DB;
 
 class MakerService
@@ -12,6 +13,8 @@ class MakerService
     }
 
     public function store() {
+        Maker::truncate();
+
         $url = "https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json";
         $apiService = new ApiService($url);
         $response = $apiService->getApiData();
