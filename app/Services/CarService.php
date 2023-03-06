@@ -63,7 +63,8 @@ class CarService
     public function add ($request) {
         DB::beginTransaction();
         $url = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/" . $request['vin'] . "?format=json";
-        $carData = $this->getApiData($url);
+        $apiService = new ApiService($url);
+        $carData = $apiService->getApiData();
         $userId = $this->getUserId($request['name']);
         $timestamp = date('Y-m-d H:i:s');
 
@@ -174,36 +175,6 @@ class CarService
         return DB::table('cars')
                  ->where('vin', $vin)
                  ->exists();
-    }
-
-    private function getApiData($url) {
-        $query = http_build_query(array($url));
-        $opts = array('http' =>
-                          array(
-                              'header' =>
-                                  "Content-Type: application/x-www-form-urlencoded\r\n".
-                                  "Content-Length: ".strlen($query)."\r\n".
-                                  "User-Agent:MyAgent/1.0\r\n",
-                              'method' => 'GET',
-                              'content' => $query
-                          )
-        );
-        $apiURL = $url;
-        $context = stream_context_create($opts);
-        $fp = fopen($apiURL, 'rb', false, $context);
-        if(!$fp)
-        {
-            return "error";
-        }
-        $data = @stream_get_contents($fp);
-        if($data == false)
-        {
-            return "error";
-        }
-
-        $decodeData = json_decode($data, true);
-
-        return $decodeData;
     }
 
     private function getCarById ($id) {
