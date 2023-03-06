@@ -27,7 +27,7 @@ class RefreshMaker implements ShouldQueue
         Maker::truncate();
         Brand::truncate();
         $getAllMakersUrl = "https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json";
-        $response = $apiService->getApiData($getAllMakersUrl);
+        $response = $apiService($getAllMakersUrl);
         $timestamp = date('Y-m-d H:i:s');
 
         foreach ($response["Results"] as $result) {
@@ -38,7 +38,7 @@ class RefreshMaker implements ShouldQueue
                 'updated_at' => $timestamp
             ]);
             $getBrandsUrl = "https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformakeid/".$result["Make_ID"]."?format=json";
-            $brands = $apiService->getApiData($getBrandsUrl);
+            $brands = $apiService($getBrandsUrl);
             foreach ($brands["Results"] as $brand) {
                 DB::table('brands')->insert([
                     'name' => $brand["Model_Name"],

@@ -5,8 +5,13 @@ namespace App\Services;
 
 class ApiService
 {
-    public function getApiData($url)
-    {
+    /**
+     * Provides retrieving data from remote api
+     *
+     * @param  string  $url
+     *
+     */
+    public function __invoke($url) {
         $query = http_build_query(array($url));
         $opts = array('http' =>
                           array(
