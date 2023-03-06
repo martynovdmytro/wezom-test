@@ -22,10 +22,9 @@ class ExportDataToXLS implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($data, $path)
+    public function __construct($data)
     {
         $this->data = $data;
-        $this->path = $path;
     }
 
     /**
@@ -35,7 +34,7 @@ class ExportDataToXLS implements ShouldQueue
      */
     public function handle()
     {
-        $filePath = $this->path;
+        $filePath = $_SERVER['DOCUMENT_ROOT'] . '/doc';
         file_put_contents($this->path, '');
         $writer = WriterEntityFactory::createXLSXWriter();
         $values = array();

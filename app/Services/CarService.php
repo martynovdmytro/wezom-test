@@ -47,7 +47,6 @@ class CarService
         if ($request->has('save')) {
             ExportDataToXLS::dispatch(
                 $response,
-                $request->input('path')
             );
         }
 
