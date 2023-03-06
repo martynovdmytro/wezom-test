@@ -3,32 +3,29 @@
 namespace App\Services;
 
 
+use App\Jobs\RefreshMaker;
 use App\Models\Maker;
 use Illuminate\Support\Facades\DB;
 
 class MakerService
 {
-    public function index() {
-        return 'ms index';
+    public function index($request) {
+        $input = $request->input('input');
+        $data = null;
+
+        if (!empty($input)) {
+            $data = Maker::select("name")
+                         ->where('name', 'LIKE', '%'. $input. '%')
+                         ->get();
+
+        }
+
+        return $data;
     }
 
     public function store() {
-        Maker::truncate();
+        RefreshMaker::dispatch();
 
-        $url = "https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json";
-        $apiService = new ApiService($url);
-        $response = $apiService->getApiData();
-        $timestamp = date('Y-m-d H:i:s');
-
-        foreach ($response["Results"] as $result) {
-            DB::table('makers')->insert([
-                'id' => $result["Make_ID"],
-                'name' => $result["Make_Name"],
-                'created_at' => $timestamp,
-                'updated_at' => $timestamp
-            ]);
-        }
-
-        return $response;
+        return 'ok';
     }
 }

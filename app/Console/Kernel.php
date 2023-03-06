@@ -17,8 +17,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule
-            ->job(new RefreshMaker())
-            ->everyFiveMinutes();
+            ->job(new RefreshMaker)
+            ->monthly();
     }
 
     /**

@@ -19,10 +19,11 @@ class MakerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // todo вывод всех записей из таблицы makers и привязанных к ним models
-        $response = $this->makerService->index();
+
+        $response = $this->makerService->index($request);
 
         return $response;
     }
