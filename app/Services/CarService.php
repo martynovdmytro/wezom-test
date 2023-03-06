@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Jobs\ExportDataToXLS;
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CarService
 {
@@ -45,9 +47,21 @@ class CarService
         }
 
         if ($request->has('save')) {
-            ExportDataToXLS::dispatch(
-                $response,
-            );
+            $file = 'data.xlsx';
+            file_put_contents($file, '');
+            $writer = WriterEntityFactory::createXLSXWriter();
+            $values = array();
+            $writer->openToFile($file);
+            foreach ($response as $items) {
+                foreach ($items as $item) {
+                    $values[] = $item;
+                }
+            }
+            $rowFromValues = WriterEntityFactory::createRowFromArray($values);
+            $writer->addRow($rowFromValues);
+            $writer->close();
+
+            return Excel::download($request->input('path'), $file);
         }
 
         $response = $this->paginate($response, 10);

@@ -34,7 +34,7 @@ class ExportDataToXLS implements ShouldQueue
      */
     public function handle()
     {
-        $filePath = $_SERVER['DOCUMENT_ROOT'] . '/doc';
+        $filePath = $_SERVER['DOCUMENT_ROOT'] . '/doc/data.xls';
         file_put_contents($filePath, '');
         $writer = WriterEntityFactory::createXLSXWriter();
         $values = array();
