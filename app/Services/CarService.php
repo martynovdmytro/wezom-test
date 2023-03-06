@@ -66,7 +66,7 @@ class CarService
         // в идеале для привязки авто должен быть какой-то уникальный идентификатор, типа номера паспорта юзера
         // в задании этого не было, поэтому идентификация только по имени
         $url = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/" . $request['vin'] . "?format=json";
-        $carData = $this->getCarData($url);
+        $carData = $this->getApiData($url);
         $userId = $this->getUserId($request['name']);
         $timestamp = date('Y-m-d H:i:s');
 
@@ -179,11 +179,12 @@ class CarService
                  ->exists();
     }
 
-    private function getCarData($url) {
+    private function getApiData($url) {
         $query = http_build_query(array($url));
         $opts = array('http' =>
                           array(
-                              'header' => "Content-Type: application/x-www-form-urlencoded\r\n".
+                              'header' =>
+                                  "Content-Type: application/x-www-form-urlencoded\r\n".
                                   "Content-Length: ".strlen($query)."\r\n".
                                   "User-Agent:MyAgent/1.0\r\n",
                               'method' => 'GET',
@@ -197,15 +198,15 @@ class CarService
         {
             return "error";
         }
-        $vinData = @stream_get_contents($fp);
-        if($vinData == false)
+        $data = @stream_get_contents($fp);
+        if($data == false)
         {
             return "error";
         }
 
-        $decodedVinData = json_decode($vinData, true);
+        $decodeData = json_decode($data, true);
 
-        return $decodedVinData;
+        return $decodeData;
     }
 
     private function getCarById ($id) {
